@@ -19,6 +19,11 @@ string recv(SOCKET &currSoc);
 void send(SOCKET &currSoc, char req[]);
 void game();
 void menu();
+void startGame();
+void playGame();
+void signUp();
+void logIn();
+void showHD();
 void sign_up();
 void log_in();
 void start_game();
@@ -63,7 +68,6 @@ int main(int argc, char* argv[])
 	string res;
 	int ret, messageLen;
 	menu();
-	system("cls");
 	while (1) {
 
 	}
@@ -123,6 +127,79 @@ void menu() {
 	huongDan.Ve();
 	thoat.Ve();
 	cout << "\r\n\r\n\r\n\r\n\r\n\r\n\r\n";
+	int select;
+	do
+	{
+		cout << "\nChon muc muon chon: ";
+		cin >> select;
+		if (select == 1)
+			system("cls");
+		if (select < 1 || select>3)
+			cout << " Chon khong hop le vui long chon lai \n";
+	} while (select<1 || select>3);
+	system("cls");
+	if (select == 1) startGame();
+	else if (select == 2) {
+		showHD();
+		int t;
+		cin >> t;
+		if (t == 1)
+		{
+			Sleep(200);
+			system("cls");
+			menu();
+		}
+		else exit(0);
+	}
+	else if (select == 3) exit(0);
+}
+
+void startGame() {
+	VeKhung baoNgoai = VeKhung(35, 5, 50, 25, "");
+	VeKhung batDau = VeKhung(46, 8, 27, 5, "        1. Dang ky");
+	VeKhung huongDan = VeKhung(46, 15, 27, 5, "       2. Dang nhap");
+	VeKhung thoat = VeKhung(46, 22, 27, 5, "        3. Quay lai");
+	system("cls");
+	baoNgoai.Ve();
+	batDau.Ve();
+	huongDan.Ve();
+	thoat.Ve();
+	cout << "\r\n\r\n\r\n\r\n\r\n\r\n\r\n";
+	int select;
+	do
+	{
+		cout << "\nChon muc muon chon: ";
+		cin >> select;
+		if (select == 1)
+			system("cls");
+		if (select < 1 || select>3)
+			cout << " Chon khong hop le vui long chon lai \n";
+	} while (select<1 || select>3);
+	system("cls");
+	if (select == 1) signUp();
+	else if (select == 2) {
+		logIn();
+	}
+	else if (select == 3) {
+		Sleep(200);
+		menu();
+	}
+}
+void signUp() {
+	//
+}
+void logIn() {
+	//
+}
+void playGame() {
+	VeKhung baoNgoai = VeKhung(28, 5, 50, 25, "");
+	VeKhung batDau = VeKhung(46, 8, 27, 5, "        1. Choi ngay");
+	VeKhung thoat = VeKhung(46, 15, 27, 5, "        2. Quay lai");
+	system("cls");
+	baoNgoai.Ve();
+	batDau.Ve();
+	thoat.Ve();
+	cout << "\r\n\r\n\r\n\r\n\r\n\r\n\r\n";
 	int chon;
 	do
 	{
@@ -133,4 +210,39 @@ void menu() {
 		if (chon < 1 || chon>3)
 			cout << " Chon khong hop le vui long chon lai \n";
 	} while (chon<1 || chon>3);
+}
+void showHD() {
+	cout << "1.  You can play as an entire class or in two groups.\n";
+	cout << "If you play as an entire class, it is suggested that\n";
+	cout << "you call on different students to answer questions.\n";
+	cout <<	"If you play as two teams, you will need to play two games.\n";
+	cout <<	"You will need to appoint a spokesperson for each team.\n";
+	cout <<	"I have also played with two teams, alternating questions\n";
+	cout <<	"between the two and keeping score.\n";
+	cout <<	"2.  Once the game has loaded, and is in slide show view,\n";
+	cout <<	"click on the $100 question.This game is very easy\n";
+	cout <<	"to use since many of the directions are on each slide.\n";
+	cout <<	"If a student would like to use 50 / 50, phone a friend\n";
+	cout <<	"or ask the audience, click on the appropriate button.\n";
+	cout <<	"Then follow the slides.\n";
+	cout <<	"3. Directions for viewing the previous slide are given\n";
+	cout <<	"on each slide.\n";
+	cout <<	"4.  The game is over when a question is missed.1.You can play as an entire class or in two groups.\n";
+	cout <<	"If you play as an entire class, it is suggested that\n";
+	cout <<	"you call on different students to answer questions.\n";
+	cout <<	"If you play as two teams, you will need to play two games.\n";
+	cout <<	"You will need to appoint a spokesperson for each team.\n";
+	cout <<	"I have also played with two teams, alternating questions\n";
+	cout <<	"between the two and keeping score.\n";
+	cout <<	"2.  Once the game has loaded, and is in slide show view,\n";
+	cout <<	"click on the $100 question.This game is very easy\n";
+	cout <<	"to use since many of the directions are on each slide.\n";
+	cout <<	"If a student would like to use 50 / 50, phone a friend\n";
+	cout <<	"or ask the audience, click on the appropriate button.\n";
+	cout <<	"Then follow the slides.\n";
+	cout <<	"3. Directions for viewing the previous slide are given\n";
+	cout <<	"on each slide.\n";
+	cout <<	"4.  The game is over when a question is missed.\n";
+	cout << "\n Enter 1 to back menu";
+	cout << "\n Enter anything to quit program\n";
 }

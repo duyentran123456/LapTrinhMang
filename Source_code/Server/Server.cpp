@@ -15,6 +15,19 @@
 #define SERVER_ADDR "127.0.0.1"
 #define BUFF_SIZE 2048
 using namespace std;
+
+struct ClientInfo
+{
+	SOCKET socket;
+	sockaddr_in clientAddr;// address of client
+	string userClient; // user client logined
+	int statusLogin;// logined is 1, else 0
+	int statusInGame;
+	Question listQues[15];
+	int score;
+	Assist assist;
+
+};
 // struct
 // function prototype
 string recv(SOCKET &currSoc);
