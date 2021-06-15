@@ -45,6 +45,21 @@ struct ClientInfo {
 	Question listQues[15];
 	int score;
 	Assist assist;
+
+	bool getQuestions() {
+		int randArr[15];
+		for (int i = 0; i < 15; i++) {
+			randArr[i] = rand() % QUESTION_NUM;
+		}
+
+		for (int i = 0; i < 15; i++) {
+			if (!getQuestion(randArr[i], &listQues[i]))
+				return false;
+		}
+
+		return true;
+	}
+
 };
 
 // function prototype
