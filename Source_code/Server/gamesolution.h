@@ -13,6 +13,7 @@ struct Question {
 	string ansD;
 	string ansTrue;
 };
+
 struct Assist {
 	bool _50_50;
 	bool _call_a_friend;
