@@ -317,29 +317,159 @@ void communicating(ClientInfo *clientInfo) {
 	}
 }
 
+/*
+	req: SIGNUP [username] [password]
+	res:
+		success: 30 SIGNUP
+		failure: [err-code] [detail]
+*/
 string signUp(ClientInfo* clientInfo, char* body) {
 	string response;
+
+	string bodyStr = body, username, password;
+	int start = 0;
+	int end = bodyStr.find(" ");
+	if (end == -1) return BAD_REQUEST;
+	username = bodyStr.substr(start, end - start);
+
+	start = end + 1;
+	end = bodyStr.find(" ", start);
+	if (end != -1) return BAD_REQUEST;
+	end = bodyStr.length();
+	password = bodyStr.substr(start, end - start);
+
+	fstream AccountsData("accounts.txt");
+
+	string account, username_account;
+	while (getline(AccountsData, account)) {
+		username_account = account.substr(0, account.find(" "));
+		if (username == username_account) {
+			AccountsData.close();
+			return "USERNAME_EXISTED";
+		}
+	}
+
+	AccountsData << username << " " << password << endl;
+	AccountsData.close();
+
+	response.append(SUCCESS).append(" ").append(SIGNUP);
+
 	return response;
 }
 string logIn(ClientInfo* clientInfo, char* body) {
 	string response;
 	return response;
 }
+
+/*
+	req: LOGOUT
+	res:
+		success: 30 LOGOUT
+		failure: [err-code] [detail]
+*/
 string logOut(ClientInfo* clientInfo) {
 	string response;
+
+	if (clientInfo->statusLogin) {
+		clientInfo->statusLogin = false;
+		response.append(SUCCESS).append(" ").append(LOGOUT);
+	}
+	else {
+		response = "USER NOT LOGIN";
+	}
+
 	return response;
 }
 string start(ClientInfo* clientInfo, char* body) {
 	string response;
 	return response;
 }
+
+
+/*
+	req: ANSWER [option]
+	res: 
+		success: RESULT [true/false]
+		failure: [err-code] [detail]
+*/
 string answer(ClientInfo* clientInfo, char* body) {
 	string response;
+
+	if (clientInfo->statusLogin == 0) return "USER NOT LOGIN";
+	if (clientInfo->statusInGame == false) return "USER NOT IN GAME";
+	
+	Question currentQuestion = clientInfo->listQues[clientInfo->score];
+
+	if (currentQuestion.ansTrue == body) response.append(SUCCESS).append(" ").append("TRUE");
+	else response.append(SUCCESS).append(" ").append("FALSE");
+
 	return response;
 }
+
+/*
+	req: ASSIST [option]
+	res:
+		success:
+			ASSIST 50-50 [wrong-option-1] [wrong-option-2]
+			ASSIST friend [pro-option]
+			ASSIST audience [percen-1] [percent-2] [percent-3] [percent-4]
+		failure:
+			[err-code] [detail]
+*/
 string assist(ClientInfo* clientInfo, char* body) {
 	string response;
-	return response;
+
+	if (clientInfo->statusLogin == 0) return "USER NOT LOGIN";
+	if (clientInfo->statusInGame == false) return "USER NOT IN GAME";
+
+	string option = body;
+	Question currentQuestion = clientInfo->listQues[clientInfo->score];
+
+	if (option == "5050") {
+		if (clientInfo->assist._50_50) {
+			clientInfo->assist._50_50 = false;
+
+			string options[4] = { "A" , "B", "C", "D" };
+			int wrong1, wrong2, right, random;
+			for(int i = 0; i < 4; i++) 
+				if (options[i] == currentQuestion.ansTrue) {
+					right = i;
+					break;
+				}
+			random = rand() % 4;
+			while (random == right) random = rand() % 4;
+			wrong1 = random;
+			while (random == right || random == wrong1) random = rand() % 4;
+			wrong2 = random;
+
+			response.append(SUCCESS).append(" ").append(ASSIST).append(" ")
+				.append(options[wrong1]).append(" ").append(options[wrong2]);
+
+			return response;
+		}
+		else {
+			return "ASSISTANCE USED";
+		}
+	}
+	else if (option == "friend") {
+		if (clientInfo->assist._call_a_friend) {
+			clientInfo->assist._call_a_friend = false;
+
+			string options[4] = { "A" , "B", "C", "D" };
+			int random = rand() % 100;
+			string friendOption = random < 80 ? currentQuestion.ansTrue : options[random % 4];
+
+			response.append(SUCCESS).append(" ").append(ASSIST).append(" ").append(friendOption);
+
+			return response;
+		}
+		else {
+			return "ASSISTANCE USED";
+		}
+	}
+	else {
+		return BAD_REQUEST;
+	}
 }
 string quit(ClientInfo* clientInfo, char* body) {
 	string response;

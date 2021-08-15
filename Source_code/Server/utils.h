@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <iostream>
 #include "gamesolution.h"
 
 #define QUESTION_DATA_LOCATION "questions.csv"
