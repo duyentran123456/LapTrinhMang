@@ -16,49 +16,7 @@
 #define BUFF_SIZE 2048
 #define CLIENT_DISCONNECT 0
 
-#define SIGNUP "SIGNUP"
-#define LOGIN  "LOGIN"
-#define LOGOUT "LOGOUT"
-#define START "START"
-#define QUESTION "QUESTION"
-#define ANSWER "ANSWER"
-#define RESULT "RESULT"
-#define ASSIST "ASSIST"
-#define QUIT "QUIT"
-#define VICTORY "VICTORY"
-#define SERVER_ERROR "10"
-#define BAD_REQUEST "20"
-#define CANNOT_USE_ASSIST "21"
-#define CANNOT_START_GAME "22"
-#define CANNOT_ANSWER "23"
-#define CANNOT_QUIT "24"
-#define SUCCESS "30"
-
 using namespace std;
-
-struct ClientInfo {
-	SOCKET socket;
-	sockaddr_in clientAddr;// address of client
-	string userClient; // user client logined
-	int statusLogin;// logined is 1, else 0
-	int statusInGame;
-	Question listQues[15];
-	int score;
-	Assist assist;
-};
-
-// function prototype
-string recv(SOCKET &currSoc);
-void send(SOCKET &currSoc, char req[]);
-string solveRequest(ClientInfo*, char[]);
-string signUp(ClientInfo*, char*);
-string logIn(ClientInfo*, char*);
-string logOut(ClientInfo*);
-string start(ClientInfo*, char*);
-string answer(ClientInfo*, char*);
-string assist(ClientInfo*, char*);
-string quit(ClientInfo*, char*);
-void communicating(ClientInfo *);
 
 int main(int argc, char* argv[])
 {
@@ -111,11 +69,12 @@ int main(int argc, char* argv[])
 	}
 
 	printf("Server started!\n");
-	char sendBuff[BUFF_SIZE], recvBuff[BUFF_SIZE];
+	//char sendBuff[BUFF_SIZE], recvBuff[BUFF_SIZE];
 	SOCKET connSock;
 	sockaddr_in clientAddr;
 	int clientAddrLen = sizeof(clientAddr);
-	int ret, i;
+	//int ret;
+	int i;
 	for (i = 1; i < WSA_MAXIMUM_WAIT_EVENTS; i++) {
 		clientInfos[i] = 0;
 	}
@@ -207,126 +166,4 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
-string recv(SOCKET &currSoc) {
-	char buff[BUFF_SIZE];
-	string data;
-	int ret, len = 0;
-	while (1) {
-		ret = recv(currSoc, buff, BUFF_SIZE, 0);
-		if (ret == SOCKET_ERROR) {
-			printf("Cannot receive message.");
-			break;
-		}
-		buff[ret] = 0;
-		len += ret;
-		// append
-		data.append(buff);
-		bool check = false;
-		for (int i = 0; i < len - 1; i++) {
-			if (data[i] == '\r'&& data[i + 1] == '\n') check = true;
-		}
-		if (check) break;
-	}
-	return data;
-}
 
-void send(SOCKET &currSoc, char req[]) {
-	int rLeft = strlen(req);
-	int index = 0;
-	int ret;
-	while (rLeft > 0) {
-		ret = send(currSoc, req + index, rLeft, 0);
-		if (ret == SOCKET_ERROR) {
-			printf("Cannot send data\n");
-			return;
-		}
-		rLeft -= ret;
-		index += ret;
-	}
-}
-
-string solveRequest(ClientInfo *clientInfo, char str[]) {
-	string header, body;
-	for (int i = 0; i < 4; i++) header.push_back(str[i]);
-	for (int i = 5; i < strlen(str); i++) body.push_back(str[i]);
-	string response;
-	/*if (strcmp(&header[0], USER) == 0) {
-		response = login(clientInfo, &body[0]);
-	}
-	else if (strcmp(&header[0], POST) == 0) {
-		response = postMess(loginStruct, &body[0]);
-	}
-	else if (strcmp(&header[0], QUIT) == 0) {
-		response = quit(loginStruct);
-	}
-	else response = UNFORMAT_REQUEST;*/
-	return response;
-}
-
-vector<string> splitRequest(string s) {
-	vector<string> res;
-	string delimiter = "\r\n";
-	size_t pos = 0;
-	string token;
-	while ((pos = s.find(delimiter)) != string::npos) {
-		token = s.substr(0, pos);
-		res.push_back(token);
-		s.erase(0, pos + delimiter.length());
-	}
-	if (s.length()>0) res.push_back(s);
-	return res;
-}
-
-void communicating(ClientInfo *clientInfo) {
-	// receive message from client
-	string buff;
-	string res;
-	buff = recv(clientInfo->socket);
-	if (buff.size() == 0) {
-		//string tmp = quit(clientInfo);
-		return;
-	}
-
-	buff[buff.size() - 2] = 0;
-	// copy message without "\r\n"
-	string tmp;
-	for (int i = 0; i < buff.size() - 2; i++) tmp.push_back(buff[i]);
-	vector<string> reqs = splitRequest(buff);
-	// solve each string of vector string request
-	for (int i = 0; i < reqs.size(); i++) {
-		string req = reqs[i];
-		res = solveRequest(clientInfo, &req[0]);
-		res.append("\r\n");
-		// send response after append "\r\n" to client
-		send(clientInfo->socket, &res[0]);
-	}
-}
-
-string signUp(ClientInfo* clientInfo, char* body) {
-	string response;
-	return response;
-}
-string logIn(ClientInfo* clientInfo, char* body) {
-	string response;
-	return response;
-}
-string logOut(ClientInfo* clientInfo) {
-	string response;
-	return response;
-}
-string start(ClientInfo* clientInfo, char* body) {
-	string response;
-	return response;
-}
-string answer(ClientInfo* clientInfo, char* body) {
-	string response;
-	return response;
-}
-string assist(ClientInfo* clientInfo, char* body) {
-	string response;
-	return response;
-}
-string quit(ClientInfo* clientInfo, char* body) {
-	string response;
-	return response;
-}
