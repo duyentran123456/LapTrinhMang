@@ -47,7 +47,7 @@ string recv(SOCKET &currSoc);
 void send(SOCKET &currSoc, char req[]);
 void menu();
 void startGame();
-void playGame();
+void playGame(SOCKET);
 void showQues();
 string signUp();
 string logIn();
@@ -57,7 +57,7 @@ string answer();
 string assist();
 string quit();
 void solveRequest();
-void solveResponse(string);
+void solveResponse(string, SOCKET, string);
 int main(int argc, char* argv[])
 {
 	// Step 1: Inittiate WinSock
@@ -91,25 +91,25 @@ int main(int argc, char* argv[])
 
 	//Step 5: Communicate with server
 	int ret, messageLen;
-	while (1) {
+	//while (1) {
 		menu();
 		messageLen = request.size();
 		if (messageLen == 0) {
 			throw MSG_EMPTY;
-			break;
+			//break;
 		}
 		send(client, &request[0]);
-		request = "";
 		// receive message
 		response = recv(client);
+		vector<string> reqs = split(request, " ");
 		vector<string> ress = split(response, "\r\n");
 		//response[response.size() - 2] = 0;
 		cout << "response" << ress[0]<<endl;
 		//if (ress[0] == SUCCESS) playGame();
-		solveResponse(ress[0]);
+		solveResponse(ress[0], client, reqs[0]);
 		request = "";
 		response = "";
-	}
+	//}
 	//Step 6: Close socket
 	closesocket(client);
 	//Step 7: Terminate Winsock
@@ -225,7 +225,7 @@ void startGame() {
 	}
 }
 
-void playGame() {
+void playGame(SOCKET client) {
 	VeKhung baoNgoai = VeKhung(35, 5, 40, 20, "");
 	VeKhung batDau = VeKhung(42, 8, 27, 5, "        1. Choi ngay");
 	VeKhung thoat = VeKhung(42, 15, 27, 5, "        2. Quay lai");
@@ -246,7 +246,17 @@ void playGame() {
 			cout << " Chon khong hop le vui long chon lai \n";
 	} while (select<1 || select>2);
 	system("cls");
-	if (select == 1) request = start();
+	if (select == 1) {
+		request = start();
+		send(client, &request[0]);
+		// receive message
+		vector<string> reqs = split(request, " ");
+		response = recv(client);
+		vector<string> ress = split(response, "\r\n");
+		cout << "play1";
+		solveResponse(ress[0], client, reqs[0]);
+		cout << "play2";
+	}
 	else if (select == 2) {
 		Sleep(200);
 		startGame();
@@ -308,9 +318,12 @@ string quit() {
 void solveRequest() {
 
 }
-void solveResponse(string str) {
+void solveResponse(string str, SOCKET client, string header) {
 	//show message from server
-	if (str == SUCCESS) {
-		playGame();
+	if (str == SUCCESS && header == LOGIN) {
+		playGame(client);
+	}
+	else if (strcmp(&str[0], SUCCESS) == 0 && strcmp(&header[0], START)) {
+		cout << "start success1";// get cau hoi 1
 	}
 }

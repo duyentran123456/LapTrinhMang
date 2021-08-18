@@ -244,6 +244,12 @@ string solveRequest(ClientInfo *clientInfo, char str[]) {
 	if (strcmp(&header[0], LOGIN) == 0) {
 	response = logIn(clientInfo, &payload[0]);
 	}
+	else if (strcmp(&header[0], START) == 0) {
+		response = start(clientInfo, &payload[0]);
+	}
+	else if (strcmp(&header[0], QUIT) == 0) {
+		response = quit(clientInfo, &payload[0]);
+	}
 	else response = UNFORMAT_REQUEST;
 	return response;
 }

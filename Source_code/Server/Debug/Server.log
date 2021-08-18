@@ -1,7 +1,0 @@
-﻿  stdafx.cpp
-  Server.cpp
-d:\20202\ltm\btlon\ailatrieuphu\server\gamesolution.h(240): warning C4018: '<': signed/unsigned mismatch
-d:\20202\ltm\btlon\ailatrieuphu\server\gamesolution.h(278): warning C4018: '<': signed/unsigned mismatch
-d:\20202\ltm\btlon\ailatrieuphu\server\gamesolution.h(281): warning C4018: '<': signed/unsigned mismatch
-  Server.vcxproj -> D:\20202\LTM\btlon\AiLaTrieuPhu\Debug\Server.exe
-  Server.vcxproj -> D:\20202\LTM\btlon\AiLaTrieuPhu\Debug\Server.pdb (Full PDB)
